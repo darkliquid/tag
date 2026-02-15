@@ -5,6 +5,13 @@ import (
 	"os"
 
 	"github.com/charmbracelet/fang"
+	"github.com/darkliquid/tag/internal/commands/add"
+	"github.com/darkliquid/tag/internal/commands/find"
+	"github.com/darkliquid/tag/internal/commands/index"
+	"github.com/darkliquid/tag/internal/commands/list"
+	"github.com/darkliquid/tag/internal/commands/remove"
+	"github.com/darkliquid/tag/internal/commands/set"
+	"github.com/darkliquid/tag/internal/commands/unset"
 	"github.com/spf13/cobra"
 )
 
@@ -24,48 +31,13 @@ func main() {
 		},
 	)
 	cmd.AddCommand(
-		&cobra.Command{
-			Use:     "list [files]",
-			Short:   "List tags on files",
-			Aliases: []string{"ls", "l"},
-			GroupID: "tagging",
-		},
-		&cobra.Command{
-			Use:     "add [files] [tags]",
-			Short:   "Add tags to a file",
-			Aliases: []string{"a"},
-			GroupID: "tagging",
-		},
-		&cobra.Command{
-			Use:     "remove [files] [tags]",
-			Short:   "Remove tags from a file",
-			Aliases: []string{"delete", "del", "rm", "r", "d"},
-			GroupID: "tagging",
-		},
-		&cobra.Command{
-			Use:     "set [files] [tags]",
-			Short:   "Replace tags on a file",
-			Aliases: []string{"replace", "s"},
-			GroupID: "tagging",
-		},
-		&cobra.Command{
-			Use:     "unset [files] [tags]",
-			Short:   "Clear tags on a file",
-			Aliases: []string{"clear", "u", "c"},
-			GroupID: "tagging",
-		},
-		&cobra.Command{
-			Use:     "index [paths]",
-			Short:   "Index your tagged files for searching",
-			Aliases: []string{"idx", "i"},
-			GroupID: "search",
-		},
-		&cobra.Command{
-			Use:     "find [tags]",
-			Short:   "Find your tagged files by tag",
-			Aliases: []string{"search", "f"},
-			GroupID: "search",
-		},
+		list.NewListCommand(),
+		add.NewAddCommand(),
+		remove.NewRemoveCommand(),
+		set.NewSetCommand(),
+		unset.NewUnsetCommand(),
+		index.NewIndexCommand(),
+		find.NewFindCommand(),
 	)
 
 	if err := fang.Execute(context.Background(), cmd); err != nil {
