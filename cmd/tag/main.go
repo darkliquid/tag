@@ -6,8 +6,6 @@ import (
 
 	"github.com/charmbracelet/fang"
 	"github.com/darkliquid/tag/internal/commands/add"
-	"github.com/darkliquid/tag/internal/commands/find"
-	"github.com/darkliquid/tag/internal/commands/index"
 	"github.com/darkliquid/tag/internal/commands/list"
 	"github.com/darkliquid/tag/internal/commands/remove"
 	"github.com/darkliquid/tag/internal/commands/set"
@@ -36,8 +34,6 @@ func main() {
 		remove.NewRemoveCommand(),
 		set.NewSetCommand(),
 		unset.NewUnsetCommand(),
-		index.NewIndexCommand(),
-		find.NewFindCommand(),
 	)
 
 	if err := fang.Execute(context.Background(), cmd); err != nil {

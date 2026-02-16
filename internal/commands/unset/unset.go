@@ -10,7 +10,7 @@ import (
 
 func NewUnsetCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "unset [files] [tags]",
+		Use:     "unset [files]",
 		Short:   "Clear tags on a file",
 		Aliases: []string{"clear", "u", "c"},
 		Args:    cobra.MinimumNArgs(1),
@@ -24,7 +24,7 @@ func runUnset(cmd *cobra.Command, args []string) error {
 	files := args
 
 	for _, path := range files {
-		if err := xattr.Set(path, "user.xdg.tags", []byte("")); err != nil {
+		if err := xattr.Set(path, "user.xdg.tags", nil); err != nil {
 			fmt.Fprintf(os.Stderr, "error clearing tags for %q: %v\n", path, err)
 			continue
 		}

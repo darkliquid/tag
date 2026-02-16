@@ -5,45 +5,39 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pkg/xattr"
+	"github.com/darkliquid/tag/internal/commands"
 	"github.com/spf13/cobra"
 )
 
 func NewSetCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "set [files] [tags]",
+		Use:     "set [files]",
 		Short:   "Replace tags on a file",
 		Aliases: []string{"replace", "s"},
 		Args:    cobra.MinimumNArgs(2),
 		RunE:    runSet,
 	}
+	cmd.Flags().StringSlice("tags", nil, "comma separated tags")
 
 	return cmd
 }
 
 func runSet(cmd *cobra.Command, args []string) error {
 	files := args[:len(args)-1]
-	tagsStr := args[len(args)-1]
-	newTags := parseTags(tagsStr)
+	tags, err := cmd.Flags().GetStringSlice("tags")
+	if err != nil {
+		return err
+	}
+
+	ts := make(commands.TagSet).Add(tags...)
 
 	for _, path := range files {
-		if err := xattr.Set(path, "user.xdg.tags", []byte(strings.Join(newTags, ","))); err != nil {
+		if err := commands.SetTags(path, ts); err != nil {
 			fmt.Fprintf(os.Stderr, "error setting tags for %q: %v\n", path, err)
 			continue
 		}
-		fmt.Printf("Set tags on %s: %s\n", path, strings.Join(newTags, ", "))
+		fmt.Printf("Set tags on %s: %s\n", path, strings.Join(tags, ", "))
 	}
 
 	return nil
-}
-
-func parseTags(s string) []string {
-	if s == "" {
-		return []string{}
-	}
-	tags := strings.Split(s, ",")
-	for i, t := range tags {
-		tags[i] = strings.TrimSpace(t)
-	}
-	return tags
 }

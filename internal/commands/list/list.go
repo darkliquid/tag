@@ -1,6 +1,7 @@
 package list
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -28,6 +29,11 @@ func runList(cmd *cobra.Command, args []string) error {
 				fmt.Printf("%s: (no tags)\n", path)
 				continue
 			}
+
+			if errors.Is(err, xattr.ENOATTR) {
+				continue
+			}
+
 			fmt.Fprintf(os.Stderr, "error reading tags for %q: %v\n", path, err)
 			continue
 		}

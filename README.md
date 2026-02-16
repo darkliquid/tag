@@ -4,39 +4,36 @@ Tag is a simple utility for tagging files and searching for files by tag.
 
 ## Usage
 
- - `tag [files...]` - lists current tags on specified files
- - `tag [files...] -- tag1,tag2,tag3` - sets (replaces) the tags on the specified files
- - `tag [files...] -- +tag1,-tag2` - adds tag1 and removes tag2 from the specified files
- - `tag index [path]` - updates a tag-based search index by scanning path
- - `tag search tag1` - searches for files with tag1
- - `tag search tag1,tag2,-tag3` - searches for files with tag1 and tag2 but not with tag3
- - `tag search tag1,tag2 tag1,tag3 tag2,-tag1` - searches for files with tag1 and tag2, or files with tag1 and tag3, or files with tag2 but not tag1
+- `tag add [files...] --tags tag1` - adds tag1 to the given files
+- `tag remove [files...] --tags tag1` - removes tag1 from the given files
+- `tag set [files...] --tags tag1` - sets the tags for the given files to tag1
+- `tag unset [files...]` - removes all tags for the given files
+- `tag list [files...]` - lists all tags of the given files
 
-## Naming & Searching
+## Tag Restrictions
 
-Tags can use any characters, including spaces or commas. However, they **must** be
-quoted if using spaces, commas, quotes or if they begin with a `-` or `+` character.
+Tags can use any characters, including spaces or commas. However, they **must**
+be quoted if using spaces, commas or quotes.
+
+Basically just treat the tag list as a CSV record.
 
 For example:
 
- - `tag name` - bad!
- - `"tag name" - good!
- - `+ or -` - bad!
- - `"+ or -` - good!
- - `tag-name` - good!
- - `has-a-"-character` - bad!
- - `'has-a-"-character'` - good!
-
-Searching uses a simple syntax. Spaces indicate OR matching, `,` indicate AND matching.
-Parentheses can also be used to group matches together.
+- `tag name` - bad!
+- `"tag name"` - good!
+- `tag-name` - good!
+- `has-a-"-character` - bad!
+- `'has-a-"-character'` - good!
+- `one,two,a b c` - bad!
+- `one,two,"a b c"` - good!
 
 ## Implementation
 
 Tagging is implemented using filesystem extended attributes. Naturally this means
 that this only works for files on filesystems that _support_ extended attributes.
 
-Specifically, it uses the attribute `user.xdg.tags` and stores tags within that as
-a comma separated list.
+Specifically, it uses the attribute `user.xdg.tags` and stores tags within that
+as a comma separated list.
 
 For indexing and search, a simple database is used.
 
