@@ -21,9 +21,7 @@ func NewUnsetCommand() *cobra.Command {
 }
 
 func runUnset(cmd *cobra.Command, args []string) error {
-	files := args
-
-	for _, path := range files {
+	for _, path := range args {
 		if err := xattr.Set(path, "user.xdg.tags", nil); err != nil {
 			fmt.Fprintf(os.Stderr, "error clearing tags for %q: %v\n", path, err)
 			continue

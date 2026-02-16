@@ -11,25 +11,25 @@ import (
 
 func NewAddCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "add [files]",
+		Use:     "add [files] --tags [tags]",
 		Short:   "Add tags to a file",
 		Aliases: []string{"a"},
-		Args:    cobra.MinimumNArgs(2),
+		Args:    cobra.MinimumNArgs(1),
 		RunE:    runAdd,
 	}
 	cmd.Flags().StringSlice("tags", nil, "comma separated tags")
+	cmd.MarkFlagRequired("tags")
 
 	return cmd
 }
 
 func runAdd(cmd *cobra.Command, args []string) error {
-	files := args[:len(args)-1]
 	tags, err := cmd.Flags().GetStringSlice("tags")
 	if err != nil {
 		return err
 	}
 
-	for _, path := range files {
+	for _, path := range args {
 		if err := commands.SetTags(path, commands.GetTags(path).Add(tags...)); err != nil {
 			fmt.Fprintf(os.Stderr, "error setting tags for %q: %v\n", path, err)
 			continue

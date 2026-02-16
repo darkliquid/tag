@@ -11,19 +11,19 @@ import (
 
 func NewSetCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "set [files]",
+		Use:     "set [files] --tags [tags]",
 		Short:   "Replace tags on a file",
 		Aliases: []string{"replace", "s"},
-		Args:    cobra.MinimumNArgs(2),
+		Args:    cobra.MinimumNArgs(1),
 		RunE:    runSet,
 	}
 	cmd.Flags().StringSlice("tags", nil, "comma separated tags")
+	cmd.MarkFlagRequired("tags")
 
 	return cmd
 }
 
 func runSet(cmd *cobra.Command, args []string) error {
-	files := args[:len(args)-1]
 	tags, err := cmd.Flags().GetStringSlice("tags")
 	if err != nil {
 		return err
@@ -31,7 +31,7 @@ func runSet(cmd *cobra.Command, args []string) error {
 
 	ts := make(commands.TagSet).Add(tags...)
 
-	for _, path := range files {
+	for _, path := range args {
 		if err := commands.SetTags(path, ts); err != nil {
 			fmt.Fprintf(os.Stderr, "error setting tags for %q: %v\n", path, err)
 			continue

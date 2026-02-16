@@ -11,12 +11,8 @@ import (
 	"path/filepath"
 	"slices"
 
-	"github.com/adrg/xdg"
 	"github.com/pkg/xattr"
 )
-
-// Common interfaces and types for all commands
-var DBDir = filepath.Join(xdg.DataHome, "tag/index.db")
 
 // TagSet is an unordered set of tags.
 type TagSet map[string]struct{}
@@ -73,4 +69,21 @@ func SetTags(path string, tagset TagSet) error {
 	w.Flush()
 
 	return xattr.Set(path, "user.xdg.tags", bytes.TrimSpace(buf.Bytes()))
+}
+
+// ExpandedPaths returns all the paths after glob expansion.
+func ExpandedPaths(paths ...string) ([]string, error) {
+	expanded := make(map[string]struct{})
+	for _, path := range paths {
+		matches, err := filepath.Glob(path)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, match := range matches {
+			expanded[match] = struct{}{}
+		}
+	}
+
+	return slices.Collect(maps.Keys(expanded)), nil
 }
