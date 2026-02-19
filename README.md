@@ -40,10 +40,3 @@ For indexing and search, a simple database is used.
 ## Limitations
 
 Tags must be quoted if using characters with special meanings.
-
-Moving files can desync the search index (the index will not be updated with the
-new file name/location). There are _some_ ways to try and mitigate this, such as
-creating inotify subscriptions to detect when files are moved/renamed/deleted but
-that adds overhead and also isn't fully reliable (such as cases when moving files
-between different filesystems, or moving one tagged file over the top of another
-tagged file). For now, reindexing is easier, though sub-optimal.
