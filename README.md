@@ -1,16 +1,48 @@
 # Tag
 
-Tag is a simple utility for tagging files and searching for files by tag.
+Tag is a simple utility for tagging files using filesystem extended attributes.
 
 ## Usage
 
-- `tag add [files...] --tags tag1` - adds tag1 to the given files
-- `tag remove [files...] --tags tag1` - removes tag1 from the given files
-- `tag set [files...] --tags tag1` - sets the tags for the given files to tag1
-- `tag unset [files...]` - removes all tags for the given files
-- `tag list [files...]` - lists all tags of the given files
+```
+tag [files...] [flags]
+```
 
-## Tag Restrictions
+### Flags
+
+- `-a, --add strings` - add comma separated tags to files
+- `-d, --del strings` - delete comma separated tags from files
+- `-s, --set strings` - set files tags to comma separated tags
+- `-c, --clear` - clear tags on the files
+
+### Examples
+
+List tags on files:
+```
+tag file1.txt file2.txt
+```
+
+Add tags:
+```
+tag file.txt --add important,work
+```
+
+Remove tags:
+```
+tag file.txt --del old-tag
+```
+
+Replace all tags:
+```
+tag file.txt --set new-tag-1,new-tag-2
+```
+
+Clear all tags:
+```
+tag file.txt --clear
+```
+
+## Tag Syntax
 
 Tags can use any characters, including spaces or commas. However, they **must**
 be quoted if using spaces, commas or quotes.
@@ -33,9 +65,7 @@ Tagging is implemented using filesystem extended attributes. Naturally this mean
 that this only works for files on filesystems that _support_ extended attributes.
 
 Specifically, it uses the attribute `user.xdg.tags` and stores tags within that
-as a comma separated list.
-
-For indexing and search, a simple database is used.
+as a comma separated list (CSV format).
 
 ## Limitations
 
