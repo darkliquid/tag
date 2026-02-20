@@ -10,7 +10,9 @@
 
 !README.md
 !LICENSE.md
-!AGENTS.md
+!.goreleaser.yaml
 
 # ...even if they are in subdirectories
 !*/
+# Added by goreleaser init:
+dist/
